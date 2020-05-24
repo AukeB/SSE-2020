@@ -10,7 +10,8 @@ import os
 
  ### Global constants ###
 
-n = 125 # Number of .data files which is the same as the number of time instances of the star.
+n1 = 76 # Number of .data files which is the same as the number of time instances of the star.
+n2 = 125 # For M_1
 
  ### Set up paths and directories ###
 
@@ -34,6 +35,7 @@ data_files_2 = []
 for i in range(len(data_files_1_unfiltered)):
     if data_files_1_unfiltered[i].endswith('.data') and data_files_1_unfiltered[i].startswith('profile'):
         data_files_1.append(data_files_1_unfiltered[i])
+for i in range(len(data_files_2_unfiltered)):
     if data_files_2_unfiltered[i].endswith('.data') and data_files_2_unfiltered[i].startswith('profile'):
         data_files_2.append(data_files_2_unfiltered[i])
  
@@ -56,8 +58,9 @@ data_files_2 = natural_string_sort(data_files_2)
 data_paths_1 = []
 data_paths_2 = []
 
-for i in range(n):
+for i in range(n1):
     data_paths_1.append(data_dir+sim_1+data_files_1[i])
+for i in range(n2):
     data_paths_2.append(data_dir+sim_2+data_files_2[i])
 
  ### Function that reads in MESA log files from a data path ###
@@ -100,35 +103,45 @@ def save_relevant_parameters():
 	gradr_2 = []
 
 	# Loop through all files
-	for i in range(n):
+	for i in range(n1):
 		# Read in all data for both simulations.
 		global_data_1, zone_data_1 = read_in_data_file(data_paths_1[i])
-		global_data_2, zone_data_2 = read_in_data_file(data_paths_2[i])
-
+		
 		# Global parameters.
 		star_age_1.append(float(global_data_1['star_age'].iloc[0]))
-		star_age_2.append(float(global_data_2['star_age'].iloc[0]))
 		num_zones_1.append(float(global_data_1['num_zones'].iloc[0]))
-		num_zones_2.append(float(global_data_2['num_zones'].iloc[0]))
 		Teff_1.append(float(global_data_1['Teff'].iloc[0]))
-		Teff_2.append(float(global_data_2['Teff'].iloc[0]))
 		photosphere_L_1.append(float(global_data_1['photosphere_L'].iloc[0]))
-		photosphere_L_2.append(float(global_data_2['photosphere_L'].iloc[0]))
 
 		# Zone parameters.
 		logT_1.append(float(zone_data_1['logT'].iloc[-1])) # Last row for the core.
-		logT_2.append(float(zone_data_2['logT'].iloc[-1]))
 		logRho_1.append(float(zone_data_1['logRho'].iloc[-1])) # Last row for the core.
-		logRho_2.append(float(zone_data_2['logRho'].iloc[-1]))
 		logR_1.append(zone_data_1['logR'])
-		logR_2.append(zone_data_2['logR'])
 		grada_1.append(zone_data_1['grada'])
-		grada_2.append(zone_data_2['grada'])
 		gradr_1.append(zone_data_1['gradr'])
+
+		print(i,data_files_1[i],star_age_1[-1],num_zones_1[-1],Teff_1[-1],photosphere_L_1[-1],logT_1[-1],logRho_1[-1],)
+		#print(i,data_files_1[i],logR_1[-1])
+
+	for i in range(n2):
+		# Read in all data for both simulations.
+		global_data_2, zone_data_2 = read_in_data_file(data_paths_2[i])
+
+		# Global parameters.
+		star_age_2.append(float(global_data_2['star_age'].iloc[0]))
+		num_zones_2.append(float(global_data_2['num_zones'].iloc[0]))
+		Teff_2.append(float(global_data_2['Teff'].iloc[0]))
+		photosphere_L_2.append(float(global_data_2['photosphere_L'].iloc[0]))
+
+		# Zone parameters.
+		logT_2.append(float(zone_data_2['logT'].iloc[-1]))
+		logRho_2.append(float(zone_data_2['logRho'].iloc[-1]))
+		logR_2.append(zone_data_2['logR'])
+		grada_2.append(zone_data_2['grada'])
 		gradr_2.append(zone_data_2['gradr'])
 
-		print(i,data_files_1[i],star_age_1[-1],star_age_2[-1],num_zones_1[-1],num_zones_2[-1],Teff_1[-1],Teff_2[-1],photosphere_L_1[-1],photosphere_L_2[-1],logT_1[-1],logT_2[-1],logRho_1[-1],logRho_2[-1])
-		#print(i,data_files_1[i],logR_1[-1])
+		print(i,data_files_2[i],star_age_2[-1],num_zones_2[-1],Teff_2[-1],photosphere_L_2[-1],logT_2[-1],logRho_2[-1])
+		#print(i,data_files_2[i],logR_2[-1])
 
 	np.save(data_dir+numpy_arrays+'star_age_1',star_age_1)
 	np.save(data_dir+numpy_arrays+'star_age_2',star_age_2)
@@ -152,9 +165,6 @@ def save_relevant_parameters():
 	print(f'Succesfully saved all relevant parameters in {data_dir}{numpy_arrays}')
 
 save_relevant_parameters()
-
-
-
 
 
 
