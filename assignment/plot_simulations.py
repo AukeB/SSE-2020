@@ -20,13 +20,13 @@ import regimes
 
 n1 = 76 # Number of .data files which is the same as the number of time instances of the star.
 n2 = 125 # For M_1
-figsize=(10,7)
+figsize=(13,6.5)
 
  ### Set up paths and directories ###
 
 # General data directory.
 #data_dir = '/data2/bruinsma/SSE/data'
-data_dir = '/home/auke/Desktop/temp/data'
+data_dir = '/home/auke/Desktop/temp2/data'
 
 # Two different paths for the two different simulations.
 sim_1 = '/1m_sun/LOGS/'
@@ -148,7 +148,7 @@ def make_plot_1():
 	sm = plt.cm.ScalarMappable(cmap = jet, norm = plt.Normalize(vmin=np.min(star_age_1), vmax=np.max(star_age_1)))
 	sm._A = []
 	cb = plt.colorbar(sm)
-	cb.set_label('Age [Myr]')
+	cb.set_label('Age [yr]')
 
 	#ax.plot(logT_1,logRho_1,label=r'$1M_{Sun}$',ls='--', lw=0.8, marker='o', ms=4, color='brown')
 	#ax.plot(logT_2,logRho_2,label=r'$2M_{Sun}$',ls='--', lw=0.8, marker='o', ms=4, color='k')
@@ -303,7 +303,7 @@ def make_plot_2():
 	sm = plt.cm.ScalarMappable(cmap = jet, norm = plt.Normalize(vmin=np.min(star_age_1), vmax=np.max(star_age_1)))
 	sm._A = []
 	cb = plt.colorbar(sm)
-	cb.set_label('Age [Gyr]')
+	cb.set_label('Age [yr]')
 
 	#ax.plot(logT_1,logRho_1,label=r'$1M_{Sun}$',ls='--', lw=0.8, marker='o', ms=4, color='brown')
 	#ax.plot(logT_2,logRho_2,label=r'$2M_{Sun}$',ls='--', lw=0.8, marker='o', ms=4, color='k')
@@ -312,50 +312,60 @@ def make_plot_2():
 	#ax.grid()
 	
 	plt.savefig('figs/plot2.png')
-	#plt.show()
+	plt.show()
 	plt.close()
 
  ### Convection ###
 
 def make_plot_3_and_4():
 	for i in range(n2):
-		print(i)
+		if i == 7:
+			#print(i)
 
-		fig, (ax1, ax2) = plt.subplots(1,2,figsize=(10,5))
-		
-		if i == 3: fig.suptitle('Convection in the pre-main sequence phase.',fontsize = 18)
-		if i == 6: fig.suptitle('Convection in the main sequence phase.',fontsize = 18)
+			fig, (ax1, ax2) = plt.subplots(1,2,figsize=(10,5))
+			
+			if i == 3: 
+				fig.suptitle('Convection in the pre-main sequence phase.',fontsize = 18)
+				ax1.text(x=-1,y=1e4,s='Convection')
+				ax2.text(x=-0.7,y=0.6*1e4,s='Convection')
+			if i == 7: 
+				fig.suptitle('Convection in the main sequence phase.',fontsize = 18)
+				ax1.axvline(x=-0.132382)
+				ax2.axvline(x=-0.755303)
+				ax1.text(x=-2.5,y=1*10**1,s='Radiation')
+				ax2.text(x=-2.3,y=0.7,s='Convection')
 
-		ax1.set_title(r'$1M_{Sun}$',fontsize=18)
-		ax1.set_xlabel(r'$\log R$',fontsize=16)
-		ax1.set_ylabel(r'$\log \nabla$',fontsize=16)
+			ax1.set_title(r'$1M_{Sun}$',fontsize=18)
+			ax1.set_xlabel(r'$\log (R/R_{Sun})$',fontsize=16)
+			ax1.set_ylabel(r'$\log \nabla$',fontsize=16)
 
-		ax2.set_title(r'$2M_{Sun}$',fontsize=18)
-		ax2.set_xlabel(r'$\log R$',fontsize=16)
-		ax2.set_ylabel(r'$\log \nabla$',fontsize=16)
+			ax2.set_title(r'$2M_{Sun}$',fontsize=18)
+			ax2.set_xlabel(r'$\log (R/R_{Sun})$',fontsize=16)
+			ax2.set_ylabel(r'$\log \nabla$',fontsize=16)
 
-		fig.tight_layout(pad=1.0)
+			fig.tight_layout(pad=1.0)
 
-		ax2.set_yscale('log')
-		ax1.set_yscale('log')
+			ax2.set_yscale('log')
+			ax1.set_yscale('log')
 
-		ax1.plot(logR_1[i],grada_1[i],color='brown',lw=1,ls='--',label=r'$\nabla_{ad}$')
-		ax1.plot(logR_1[i],gradr_1[i],color='k',lw=1,ls='--',label=r'$\nabla_{rad}$')
-		
-		ax2.plot(logR_2[i],grada_2[i],c='brown',lw=1,ls='-',label=r'$\nabla_{ad}$')
-		ax2.plot(logR_2[i],gradr_2[i],c='k',lw=1,ls='-',label=r'$\nabla_{rad}$')
+			ax1.plot(logR_1[i],grada_1[i],color='brown',lw=1,ls='--',label=r'$\nabla_{ad}$')
+			ax1.plot(logR_1[i],gradr_1[i],color='k',lw=1,ls='--',label=r'$\nabla_{rad}$')
+			
+			ax2.plot(logR_2[i],grada_2[i],c='brown',lw=1,ls='-',label=r'$\nabla_{ad}$')
+			ax2.plot(logR_2[i],gradr_2[i],c='k',lw=1,ls='-',label=r'$\nabla_{rad}$')
 
-		ax1.legend()
-		ax2.legend()
+			ax1.legend()
+			ax2.legend()
 
-		fig.tight_layout()
-		fig.subplots_adjust(top=0.85)
+			fig.tight_layout()
+			fig.subplots_adjust(top=0.85)
 
-		plt.savefig(f'figs/convection_plots/plot_convection_profile_{i}.png')
-		plt.close()
+			plt.savefig(f'figs/convection_plots/plot_convection_profile_{i}.png')
+			plt.show()
+			plt.close()
 
 def main():
-	make_plot_1()
+	#make_plot_1()
 	make_plot_2()
 	#make_plot_3_and_4()
 
